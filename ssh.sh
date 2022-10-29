@@ -124,7 +124,36 @@ chmod 644 /etc/stunnel/stunnel.pem
 cp /etc/default/stunnel4 /etc/default/stunnel4.backup
 sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/stunnel4
 
+# Configuring squid
 
+mv /etc/squid/squid.conf /etc/squid/squid.conf.backup
+cat << EOF > /etc/squid/squid.conf
+acl url1 dstdomain -i 127.0.0.1
+acl url2 dstdomain -i localhost
+acl url3 dstdomain -i $pub_ip
+acl url4 dstdomain -i /REZOTHSSSH?
+acl payload url_regex -i "/etc/squid/payload.txt"
+
+http_access allow url1
+http_access allow url2
+http_access allow url3
+http_access allow url4
+http_access allow payload
+http_access deny all
+
+http_port 8080
+visible_hostname REZOTHSSSH
+via off
+forwarded_for off
+pipeline_prefetch off
+EOF
+cat << EOF > /etc/squid/payload.txt
+.whatsapp.net/
+.facebook.net/
+.twitter.com/
+.speedtest.net/
+EOF
+}
 fun_udpgw()
 {
 #build and install badvpn-udpgw
