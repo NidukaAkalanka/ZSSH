@@ -251,6 +251,10 @@ echo -e "${ENDCOLOR}"
 echo /bin/false >> /etc/shells
 clear
 
+#Pip installs
+pip install -r requirements.txt
+clear
+
 #Adding the default user
 echo -ne "${GREEN}Enter the default username : "; read username
 while true; do
